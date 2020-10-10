@@ -52,19 +52,34 @@ END_MESSAGE_MAP()
 
 CMFCPractice3BasicControlDlg::CMFCPractice3BasicControlDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCPRACTICE3_BASICCONTROL_DIALOG, pParent)
+	, m_strEdit(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	// 체크 박스 설정
+	m_bChecked[0] = FALSE;
+	m_bChecked[1] = FALSE;
 }
 
 void CMFCPractice3BasicControlDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_STRING, m_strEdit);
+	DDX_Control(pDX, IDC_LIST_OUTPUT, m_listBox);
+	DDX_Control(pDX, IDC_COMBO_AUTO, m_cbListItem);
 }
 
 BEGIN_MESSAGE_MAP(CMFCPractice3BasicControlDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_COMMAND(IDC_RADIO1, &CMFCPractice3BasicControlDlg::OnRadio1)
+	ON_COMMAND(IDC_RADIO2, &CMFCPractice3BasicControlDlg::OnRadio2)
+	ON_BN_CLICKED(IDC_CHECK1, &CMFCPractice3BasicControlDlg::OnClickedCheck1)
+	ON_BN_CLICKED(IDC_CHECK2, &CMFCPractice3BasicControlDlg::OnClickedCheck2)
+	ON_BN_CLICKED(IDC_BUTTON_ADD, &CMFCPractice3BasicControlDlg::OnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BUTTON_INSERT, &CMFCPractice3BasicControlDlg::OnClickedButtonInsert)
+	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMFCPractice3BasicControlDlg::OnClickedButtonDelete)
 END_MESSAGE_MAP()
 
 
@@ -153,3 +168,118 @@ HCURSOR CMFCPractice3BasicControlDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CMFCPractice3BasicControlDlg::UpdateComboBox()
+{
+	// TODO: 여기에 구현 코드 추가.
+	int nCnt = m_listBox.GetCount();
+	m_cbListItem.ResetContent();
+
+	for (int i = 0; i < nCnt; i++) 
+	{
+		CString strItem;
+		strItem.Format(_T("리스트 항목: %d"), i + 1);
+		m_cbListItem.AddString(strItem);
+	}
+}
+
+
+void CMFCPractice3BasicControlDlg::OnRadio1()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_listBox.AddString(_T("라디오1 선택"));
+	UpdateComboBox();
+}
+
+
+void CMFCPractice3BasicControlDlg::OnRadio2()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_listBox.AddString(_T("라디오2 선택"));
+	UpdateComboBox();
+}
+
+
+void CMFCPractice3BasicControlDlg::OnClickedCheck1()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_bChecked[0] == FALSE)
+	{
+		m_bChecked[0] = TRUE;
+		m_listBox.AddString(_T("체크박스 1 체크"));
+	}
+	else {
+		m_bChecked[0] = FALSE;
+		m_listBox.AddString(_T("체크박스 1 해제"));
+	}
+	UpdateComboBox();
+}
+
+
+void CMFCPractice3BasicControlDlg::OnClickedCheck2()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_bChecked[1] == FALSE)
+	{
+		m_bChecked[1] = TRUE;
+		m_listBox.AddString(_T("체크박스 2 체크"));
+	}
+	else {
+		m_bChecked[1] = FALSE;
+		m_listBox.AddString(_T("체크박스 2 해제"));
+	}
+	UpdateComboBox();
+}
+
+
+void CMFCPractice3BasicControlDlg::OnClickedButtonAdd()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);		// 사용자가 입력한 내용을 가져오는 함수 (m_strEdit 함수에 내용 저장)
+
+	if (m_strEdit.IsEmpty() == FALSE)
+	{
+		m_listBox.AddString(m_strEdit);
+		m_strEdit.Empty();
+	}
+	else 
+	{
+		AfxMessageBox(_T("문자를 입력하세요."));
+	}
+	UpdateData(FALSE);
+	UpdateComboBox();
+}
+
+
+void CMFCPractice3BasicControlDlg::OnClickedButtonInsert()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strSelText;
+	int index = m_cbListItem.GetCurSel();   // Get Current Select : 현재 콤보 박스에 있는 아이템의 인덱스를 가져옴.
+	if (index != CB_ERR)
+	{
+		m_listBox.GetText(index, strSelText);
+		m_listBox.AddString(strSelText);
+		UpdateComboBox();
+	}
+	else {
+		AfxMessageBox(_T("콤보 박스에서 추가할 아이템을 선택하세요."));
+	}
+}
+
+
+void CMFCPractice3BasicControlDlg::OnClickedButtonDelete()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int index = m_cbListItem.GetCurSel();
+	if (index != CB_ERR)
+	{
+		m_listBox.DeleteString(index);
+		UpdateComboBox();
+	}
+	else
+	{
+		AfxMessageBox(_T("콤보 박스에서 삭제할 아이템을 선택하세요."));
+	}
+}
