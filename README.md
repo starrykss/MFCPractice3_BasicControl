@@ -1,5 +1,5 @@
 # Basic Control Demo Program with MFC Programming
-[2020-09-29 ~ ] Basic Control Demo Program with MFC Programming (C++)
+[2020-09-29 ~ 2020-10-10] Basic Control Demo Program with MFC Programming (C++)
 
 ### 프로그램 개발 환경
 - Language : C++
